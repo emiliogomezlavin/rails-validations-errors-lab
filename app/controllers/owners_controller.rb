@@ -9,25 +9,43 @@ class OwnersController < ApplicationController
   end
 
   def create
-    owner = Owner.create(owner_params)
-    redirect_to owner_path(owner)
+    @owner = Owner.new(owner_params)
+    if @owner.save
+      flash[:notice] = "Owner created!"
+      redirect_to owner_path(@owner)
+    else
+      flash[:error] = @owner.errors.full_messages.join(', ')
+      render :new
+    end
   end
 
   def show
-    owner_id = params[:id]
-    @owner = Owner.find_by(id: owner_id)
+    @owner = Owner.find(params[:id])
   end
 
   def edit
-    # stretch
+    @owner = Owner.find(params[:id])
+    render :edit
   end
 
   def update
-    # stretch
+    @owner = Owner.find(params[:id])
+    if @owner.update_attributes(owner_params)
+      flash[:notice] = "Owner information updated!"
+      redirect_to owner_path(@owner)
+    else
+      flash[:error] = @owner.errors.full_messages.join(', ')
+      render :edit
+    end
   end
 
   def destroy
-    # stretch
+    @owner = Owner.find(params[:id])
+    if @owner.destroy
+      redirect_to owners_path
+    else
+
+    end
   end
 
 
